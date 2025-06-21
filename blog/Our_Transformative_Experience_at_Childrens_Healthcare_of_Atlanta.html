@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Title - EGHI | Emory Gut Health Initiative</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-green: #004225;
+            --accent-green: #2e7d32;
+            --light-green: #66bb6a;
+            --gold: #f9a825;
+            --cream: #fff8e1;
+            --gray-bg: #f8f9fa;
+            --text-dark: #333;
+            --text-gray: #666;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.8);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: #f5f7fa;
+            overflow-x: hidden;
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Animated Background */
+        .bg-pattern {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            opacity: 0.02;
+            background-image: 
+                radial-gradient(circle at 20% 80%, var(--primary-green) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, var(--accent-green) 0%, transparent 50%);
+            animation: subtle-shift 30s ease-in-out infinite;
+        }
+
+        @keyframes subtle-shift {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-20px, -20px); }
+        }
+
+        /* Scroll Progress Bar */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gold), var(--light-green));
+            z-index: 9999;
+            transition: width 0.1s ease-out;
+            box-shadow: 0 2px 10px rgba(249, 168, 37, 0.3);
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 0.75rem 0;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .navbar.scrolled {
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: url('../EGHILogo.png') no-repeat center;
+            background-size: contain;
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-green);
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 0.5rem;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--text-gray);
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            color: var(--primary-green);
+            background: rgba(0, 66, 37, 0.08);
+        }
+
+        .menu-toggle {
+            display: none;
+            width: 30px;
+            height: 30px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 25px;
+            height: 2px;
+            background: var(--primary-green);
+            margin: 5px 0;
+            transition: all 0.3s ease;
+        }
+
+        /* Back to Blog Button */
+        .back-button {
+            position: fixed;
+            top: 100px;
+            left: 2rem;
+            padding: 0.8rem 1.5rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            color: var(--primary-green);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .back-button:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Article Container */
+        .article-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 120px 2rem 4rem;
+        }
+
+        /* Featured Image */
+        .featured-image {
+            width: 100%;
+            height: 500px;
+            background: linear-gradient(135deg, #e0e0e0, #f5f5f5);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 3rem;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            color: #bdbdbd;
+        }
+
+        .featured-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .category-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--primary-green);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-badge.volunteering {
+            background: linear-gradient(135deg, rgba(249, 168, 37, 0.9), rgba(255, 193, 7, 0.8));
+            color: white;
+            border: none;
+        }
+
+        .category-badge.research {
+            background: linear-gradient(135deg, rgba(0, 66, 37, 0.9), rgba(46, 125, 50, 0.8));
+            color: white;
+            border: none;
+        }
+
+        .category-badge.health-advice {
+            background: linear-gradient(135deg, rgba(102, 187, 106, 0.9), rgba(129, 199, 132, 0.8));
+            color: white;
+            border: none;
+        }
+
+        /* Article Header */
+        .article-header {
+            margin-bottom: 3rem;
+        }
+
+        .article-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-green);
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            animation: fade-in-up 0.8s ease;
+        }
+
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid rgba(0, 66, 37, 0.1);
+        }
+
+        .author-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 10px rgba(0, 66, 37, 0.2);
+        }
+
+        .author-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .author-name {
+            font-weight: 600;
+            color: var(--primary-green);
+            font-size: 1.1rem;
+        }
+
+        .author-title {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-gray);
+        }
+
+        .social-link {
+            width: 35px;
+            height: 35px;
+            background: rgba(0, 66, 37, 0.05);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--primary-green);
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: var(--primary-green);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 66, 37, 0.2);
+        }
+
+        /* Table of Contents - Toggle this section on/off as needed */
+        .table-of-contents {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            display: none; /* Toggle to 'block' when needed */
+        }
+
+        .toc-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+
+        .toc-list {
+            list-style: none;
+        }
+
+        .toc-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(0, 66, 37, 0.05);
+        }
+
+        .toc-list a {
+            color: var(--text-gray);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: block;
+            padding-left: 1rem;
+        }
+
+        .toc-list a:hover {
+            color: var(--primary-green);
+            transform: translateX(5px);
+        }
+
+        /* Article Content */
+        .article-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-dark);
+        }
+
+        .article-content h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            margin: 3rem 0 1.5rem;
+            position: relative;
+        }
+
+        .article-content h2::before {
+            content: '';
+            position: absolute;
+            left: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 5px;
+            height: 30px;
+            background: var(--gold);
+            border-radius: 3px;
+        }
+
+        .article-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-green);
+            margin: 2rem 0 1rem;
+        }
+
+        .article-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .article-content ul,
+        .article-content ol {
+            margin: 0 0 1.5rem 2rem;
+        }
+
+        .article-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Research Data Formatting */
+        .research-highlight {
+            background: linear-gradient(135deg, rgba(0, 66, 37, 0.05), rgba(102, 187, 106, 0.05));
+            border-left: 4px solid var(--primary-green);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 10px;
+            font-style: italic;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .research-highlight::before {
+            content: '📊';
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 2rem;
+            opacity: 0.2;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 66, 37, 0.1);
+        }
+
+        .data-table th {
+            background: rgba(0, 66, 37, 0.05);
+            font-weight: 600;
+            color: var(--primary-green);
+        }
+
+        .data-table tr:hover {
+            background: rgba(102, 187, 106, 0.05);
+            transition: background 0.3s ease;
+        }
+
+        /* Health Disclaimer */
+        .health-disclaimer {
+            background: linear-gradient(135deg, rgba(249, 168, 37, 0.1), rgba(255, 193, 7, 0.05));
+            border-left: 4px solid var(--gold);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 3rem 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .disclaimer-icon {
+            font-size: 1.5rem;
+            color: var(--gold);
+        }
+
+        .disclaimer-text {
+            flex: 1;
+            color: var(--text-gray);
+        }
+
+        /* Floating Share Button */
+        .floating-share {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 999;
+        }
+
+        .share-trigger {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--gold), var(--light-green));
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(249, 168, 37, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .share-trigger:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(249, 168, 37, 0.4);
+        }
+
+        .share-options {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            opacity: 0;
+            transform: scale(0);
+            transform-origin: bottom right;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .share-options.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .share-option {
+            width: 45px;
+            height: 45px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--primary-green);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            transform: translateY(20px);
+            opacity: 0;
+        }
+
+        .share-options.active .share-option {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .share-options.active .share-option:nth-child(1) { transition-delay: 0.05s; }
+        .share-options.active .share-option:nth-child(2) { transition-delay: 0.1s; }
+        .share-options.active .share-option:nth-child(3) { transition-delay: 0.15s; }
+        .share-options.active .share-option:nth-child(4) { transition-delay: 0.2s; }
+
+        .share-option:hover {
+            background: var(--primary-green);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* Reaction Buttons */
+        .reaction-section {
+            margin: 4rem 0;
+            padding: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .reaction-title {
+            font-size: 1.3rem;
+            color: var(--primary-green);
+            margin-bottom: 1.5rem;
+        }
+
+        .reaction-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .reaction-button {
+            padding: 0.8rem 1.5rem;
+            background: white;
+            border: 2px solid rgba(0, 66, 37, 0.1);
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reaction-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .reaction-button.active {
+            background: var(--primary-green);
+            color: white;
+            border-color: var(--primary-green);
+        }
+
+        .reaction-emoji {
+            font-size: 1.3rem;
+            transition: transform 0.3s ease;
+        }
+
+        .reaction-button:hover .reaction-emoji {
+            transform: scale(1.3) rotate(10deg);
+        }
+
+        .reaction-count {
+            font-weight: 600;
+            min-width: 20px;
+        }
+
+        .reaction-button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(102, 187, 106, 0.3), transparent);
+            transform: translate(-50%, -50%);
+            transition: all 0.5s ease;
+        }
+
+        .reaction-button.clicked::after {
+            width: 200px;
+            height: 200px;
+        }
+
+        /* Navigation Buttons */
+        .post-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 4rem 0;
+            gap: 2rem;
+        }
+
+        .nav-button {
+            flex: 1;
+            padding: 1.5rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .nav-button.prev {
+            text-align: left;
+        }
+
+        .nav-button.next {
+            text-align: right;
+            flex-direction: row-reverse;
+        }
+
+        .nav-label {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            display: block;
+        }
+
+        .nav-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-green);
+            display: block;
+            margin-top: 0.25rem;
+        }
+
+        .nav-icon {
+            font-size: 1.5rem;
+            color: var(--primary-green);
+        }
+
+        /* Comments Placeholder Section */
+        .comments-section {
+            margin: 4rem 0;
+            padding: 3rem;
+            background: var(--gray-bg);
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .comments-placeholder {
+            color: var(--text-gray);
+            font-style: italic;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary-green);
+            color: white;
+            padding: 3rem 0 2rem;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .nav-menu {
+                display: none;
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: white;
+                flex-direction: column;
+                padding: 1rem 0;
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .back-button {
+                top: 80px;
+                left: 1rem;
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .article-title {
+                font-size: 2rem;
+            }
+
+            .featured-image {
+                height: 300px;
+            }
+
+            .article-meta {
+                gap: 1rem;
+            }
+
+            .post-navigation {
+                flex-direction: column;
+            }
+
+            .nav-button {
+                width: 100%;
+            }
+
+            .article-content h2::before {
+                display: none;
+            }
+
+            .floating-share {
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .share-trigger {
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Pattern -->
+    <div class="bg-pattern"></div>
+
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo-container">
+                <div class="logo"></div>
+                <span class="logo-text">EGHI</span>
+            </a>
+            <button class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="../aboutus.html">About Us</a></li>
+                <li><a href="../events.html">Events</a></li>
+                <li><a href="../membership.html">Membership</a></li>
+                <li><a href="../resources.html">Resources</a></li>
+                <li><a href="../blog.html" class="active">Blog</a></li>
+                <li><a href="../contactus.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Back to Blog Button -->
+    <a href="../blog.html" class="back-button">
+        <span>←</span> Back to Blog
+    </a>
+
+    <!-- Article Container -->
+    <article class="article-container">
+        <!-- Featured Image -->
+        <div class="featured-image">
+            <!-- Replace the emoji with an actual image: <img src="blog-images/featured.jpg" alt="Article Title"> -->
+            <span>🏥</span>
+            <div class="category-badge volunteering">Student Stories</div>
+        </div>
+
+        <!-- Article Header -->
+        <header class="article-header">
+            <h1 class="article-title">Our Transformative Experience at Children's Healthcare of Atlanta</h1>
+            <div class="article-meta">
+                <div class="author-info">
+                    <div class="author-avatar">S</div>
+                    <div class="author-details">
+                        <span class="author-name">Sarah Chen</span>
+                        <span class="author-title">Junior, Pre-Med</span>
+                    </div>
+                    <a href="https://linkedin.com" class="social-link" target="_blank">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
+                        </svg>
+                    </a>
+                </div>
+                <div class="meta-item">
+                    <span>📅</span>
+                    <span>March 15, 2024</span>
+                </div>
+                <div class="meta-item">
+                    <span>⏱️</span>
+                    <span>5 min read</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Table of Contents (Hidden by default - change display to 'block' to show) -->
+        <nav class="table-of-contents">
+            <h3 class="toc-title">In This Article</h3>
+            <ul class="toc-list">
+                <li><a href="#section1">The Beginning of Our Journey</a></li>
+                <li><a href="#section2">Meeting the Young Patients</a></li>
+                <li><a href="#section3">Learning from Healthcare Heroes</a></li>
+                <li><a href="#section4">Key Takeaways</a></li>
+            </ul>
+        </nav>
+
+        <!-- Health Disclaimer (Show only for health-advice posts) -->
+        <!-- <div class="health-disclaimer">
+            <span class="disclaimer-icon">⚕️</span>
+            <div class="disclaimer-text">
+                This article is written by a licensed health professional and is for educational purposes only. Always consult with your healthcare provider for personalized medical advice.
+            </div>
+        </div> -->
+
+        <!-- Article Content -->
+        <div class="article-content">
+            <p>Last weekend, 15 EGHI members volunteered at the pediatric gastroenterology unit at Children's Healthcare of Atlanta, bringing smiles to young patients while learning about childhood digestive disorders. The experience reinforced our commitment to making gut health accessible to all ages.</p>
+
+            <h2 id="section1">The Beginning of Our Journey</h2>
+            <p>As we arrived at the hospital early Saturday morning, there was a palpable sense of excitement mixed with nervousness among our group. For many of us, this was our first time volunteering in a pediatric setting, and we weren't quite sure what to expect.</p>
+
+            <p>Dr. Martinez, the head of pediatric gastroenterology, welcomed us warmly and began with an orientation that immediately put us at ease. She explained how childhood digestive disorders differ from adult conditions and emphasized the importance of creating a positive environment for young patients.</p>
+
+            <div class="research-highlight">
+                "Nearly 1 in 4 children experience functional gastrointestinal disorders, making pediatric gut health a critical area of focus for the next generation of healthcare providers."
+            </div>
+
+            <h2 id="section2">Meeting the Young Patients</h2>
+            <p>The real magic happened when we met the children. Armed with coloring books about healthy eating, gut-friendly recipe cards designed for kids, and our enthusiasm, we spent time in the playroom engaging with patients aged 5 to 17.</p>
+
+            <p>One particular moment stood out: a 7-year-old named Emma, who had been struggling with Crohn's disease, taught us her "tummy dance" – a series of gentle movements her physical therapist had shown her to help with discomfort. Soon, all the volunteers were doing the tummy dance, turning what could have been a difficult day for these kids into one filled with laughter.</p>
+
+            <h3>Activities We Organized</h3>
+            <ul>
+                <li>Interactive storytelling about "Good Bacteria Heroes"</li>
+                <li>Gut-healthy snack preparation demonstrations</li>
+                <li>Art therapy sessions where kids drew their "happy tummies"</li>
+                <li>Simple yoga poses for digestive comfort</li>
+            </ul>
+
+            <h2 id="section3">Learning from Healthcare Heroes</h2>
+            <p>Beyond our interactions with patients, we had the invaluable opportunity to shadow the pediatric GI team during their rounds. The dedication and compassion these healthcare professionals showed was truly inspiring.</p>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Condition</th>
+                        <th>Prevalence in Children</th>
+                        <th>Key Learning</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Functional Constipation</td>
+                        <td>3-30%</td>
+                        <td>Often linked to diet and stress</td>
+                    </tr>
+                    <tr>
+                        <td>IBD (Crohn's & UC)</td>
+                        <td>0.1%</td>
+                        <td>Increasing incidence in pediatric populations</td>
+                    </tr>
+                    <tr>
+                        <td>Celiac Disease</td>
+                        <td>1%</td>
+                        <td>Early diagnosis crucial for development</td>
+                    </tr>
+                    <tr>
+                        <td>GERD</td>
+                        <td>10-20%</td>
+                        <td>Can significantly impact quality of life</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Dr. Rodriguez, a pediatric gastroenterologist with 20 years of experience, shared insights that will stay with us forever: "Treating children isn't just about managing symptoms – it's about ensuring they can grow, play, and thrive without their condition defining their childhood."</p>
+
+            <h2 id="section4">Key Takeaways</h2>
+            <p>This volunteering experience taught us lessons that no textbook could provide:</p>
+
+            <div class="research-highlight">
+                <strong>1. The Power of Empathy:</strong> Sometimes, the best medicine is simply being present and showing a child that someone cares about their journey.
+            </div>
+
+            <p><strong>2. Family-Centered Care:</strong> We observed how involving parents and siblings in the treatment process creates a support system that extends beyond hospital walls.</p>
+
+            <p><strong>3. Innovation in Pediatric Care:</strong> From gamified medication reminders to child-friendly explanations of complex conditions, the creative approaches used in pediatric gastroenterology are revolutionizing patient care.</p>
+
+            <p><strong>4. The Gut-Brain Connection in Children:</strong> We learned how stress and anxiety can manifest as digestive issues in children, highlighting the importance of holistic care approaches.</p>
+
+            <h3>Moving Forward</h3>
+            <p>As we left the hospital that evening, our group was united in a newfound determination. This experience reinforced why organizations like EGHI are so crucial – we're not just learning about gut health; we're preparing to make a real difference in people's lives.</p>
+
+            <p>Several of our members have already signed up for regular volunteering shifts, and we're planning to organize monthly visits with new activities and educational materials. We're also working on creating a children's book about gut health, inspired by the brave young patients we met.</p>
+
+            <p>To my fellow pre-med students and anyone considering a career in healthcare: seek out these volunteering opportunities. They will challenge you, inspire you, and ultimately shape the kind of healthcare provider you'll become. The children at Children's Healthcare of Atlanta taught us that healing happens not just through medicine, but through compassion, creativity, and connection.</p>
+
+            <p>If you're interested in joining us for our next pediatric volunteering session, please reach out to the EGHI volunteering committee. Together, we can make a difference in young lives while gaining invaluable experience for our future careers.</p>
+        </div>
+
+        <!-- Reaction Section -->
+        <div class="reaction-section">
+            <h3 class="reaction-title">Was this article helpful?</h3>
+            <div class="reaction-buttons">
+                <button class="reaction-button" onclick="handleReaction(this, 'helpful')">
+                    <span class="reaction-emoji">👍</span>
+                    <span class="reaction-count">42</span>
+                </button>
+                <button class="reaction-button" onclick="handleReaction(this, 'inspiring')">
+                    <span class="reaction-emoji">💡</span>
+                    <span class="reaction-count">28</span>
+                </button>
+                <button class="reaction-button" onclick="handleReaction(this, 'love')">
+                    <span class="reaction-emoji">❤️</span>
+                    <span class="reaction-count">35</span>
+                </button>
+                <button class="reaction-button" onclick="handleReaction(this, 'informative')">
+                    <span class="reaction-emoji">📚</span>
+                    <span class="reaction-count">19</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Post Navigation -->
+        <nav class="post-navigation">
+            <a href="#" class="nav-button prev">
+                <span class="nav-icon">←</span>
+                <div>
+                    <span class="nav-label">Previous Article</span>
+                    <span class="nav-title">Breaking: New Study Links Gut Microbiome to Academic Performance</span>
+                </div>
+            </a>
+            <a href="#" class="nav-button next">
+                <div>
+                    <span class="nav-label">Next Article</span>
+                    <span class="nav-title">5 Evidence-Based Ways to Improve Your Gut Health During Finals Week</span>
+                </div>
+                <span class="nav-icon">→</span>
+            </a>
+        </nav>
+
+        <!-- Comments Section Placeholder -->
+        <div class="comments-section" id="commentsSection">
+            <p class="comments-placeholder">
+                <!-- Add your comments widget code here -->
+                Comments section coming soon...
+            </p>
+        </div>
+    </article>
+
+    <!-- Floating Share Button -->
+    <div class="floating-share">
+        <button class="share-trigger" onclick="toggleShare()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+        </button>
+        <div class="share-options" id="shareOptions">
+            <a href="#" class="share-option" onclick="shareOn('twitter')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+                </svg>
+            </a>
+            <a href="#" class="share-option" onclick="shareOn('facebook')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                </svg>
+            </a>
+            <a href="#" class="share-option" onclick="shareOn('linkedin')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
+                </svg>
+            </a>
+            <a href="#" class="share-option" onclick="shareOn('copy')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="../index.html">Home</a>
+            <a href="../aboutus.html">About</a>
+            <a href="../events.html">Events</a>
+            <a href="../membership.html">Membership</a>
+            <a href="../contactus.html">Contact</a>
+        </div>
+        <p>&copy; 2024 Emory Gut Health Initiative. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Scroll Progress Bar
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('scrollProgress').style.width = scrolled + '%';
+
+            // Navbar scroll effect
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile Menu Toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const navMenu = document.getElementById('navMenu');
+
+        menuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        // Floating Share Button
+        function toggleShare() {
+            const shareOptions = document.getElementById('shareOptions');
+            shareOptions.classList.toggle('active');
+        }
+
+        // Share functions
+        function shareOn(platform) {
+            const url = window.location.href;
+            const title = document.querySelector('.article-title').textContent;
+            
+            switch(platform) {
+                case 'twitter':
+                    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`);
+                    break;
+                case 'facebook':
+                    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`);
+                    break;
+                case 'linkedin':
+                    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`);
+                    break;
+                case 'copy':
+                    navigator.clipboard.writeText(url).then(() => {
+                        alert('Link copied to clipboard!');
+                    });
+                    break;
+            }
+            
+            toggleShare(); // Close the share menu
+        }
+
+        // Reaction buttons
+        function handleReaction(button, type) {
+            // Toggle active state
+            button.classList.toggle('active');
+            button.classList.add('clicked');
+            
+            // Update count
+            const countElement = button.querySelector('.reaction-count');
+            let count = parseInt(countElement.textContent);
+            
+            if (button.classList.contains('active')) {
+                count++;
+            } else {
+                count--;
+            }
+            
+            countElement.textContent = count;
+            
+            // Remove animation class after animation completes
+            setTimeout(() => {
+                button.classList.remove('clicked');
+            }, 500);
+        }
+
+        // Close share menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const floatingShare = document.querySelector('.floating-share');
+            if (!floatingShare.contains(e.target)) {
+                document.getElementById('shareOptions').classList.remove('active');
+            }
+        });
+
+        // Smooth scroll for table of contents links
+        document.querySelectorAll('.toc-list a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.querySelector(link.getAttribute('href'));
+                if (target) {
+                    const offset = 100; // Account for fixed navbar
+                    const targetPosition = target.offsetTop - offset;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
